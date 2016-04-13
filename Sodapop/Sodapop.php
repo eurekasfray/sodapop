@@ -25,16 +25,6 @@ class Sodapop
      * @var Path to the database file.
      */
     private $path;
-    
-    /**
-     * @var Password to the database file.
-     */
-    //private $password;
-    
-    /**
-     * @var Indicates that database file is secure.
-     */
-    //private $secure;
 
     /**
      * ...
@@ -63,7 +53,7 @@ class Sodapop
         return $this->model;
     }
     
-    /*
+    /**
      * Set path.
      */
     public function setPath($path)
@@ -71,7 +61,7 @@ class Sodapop
         $this->path = $path;
     }
     
-    /*
+    /**
      * Get path.
      */
     public function getPath()
@@ -79,49 +69,7 @@ class Sodapop
         return $this->path;
     }
     
-    /*
-     * Set password.
-     */
-    /*
-    public function setPassword($password)
-    {   
-        $this->password = $password;
-    }
-    */
-    
-    /*
-     * Set password.
-     */
-    /*
-    public function getPassword()
-    {
-        return $this->password;
-    }
-    */
-    
-    /*
-     * Set secure.
-     */
-    /*
-    public function setSecure($secure)
-    {   
-        $this->secure = $secure;
-    }
-    */
-    
-    /*
-     * Get secure.
-     *
-     * @return bool True if secured, false if unsecured.
-     */
-    /*
-    public function secure()
-    {
-        return $this->secure;
-    }
-    */
-    
-    /*
+    /**
      * Load unsecure database from a file. If database file doesn't exist, create one.
      *
      * @param string $path Path of the database file.
@@ -145,67 +93,7 @@ class Sodapop
         }
     }
     
-    /*
-     * Load secure database from a file.
-     *
-     * @param string $path Path of the database file.
-     * @return mixed A database object, else false if file doesn't exist.
-     */
-    /*
-    public static function loads($path, $password)
-    {
-        if (!file_exists($path)) {
-            return false;
-        }
-        $encryptedContent = file_get_contents($path);
-        $json = self::_decrypt($encryptedContent, $password);
-        $model = json_decode($json, true);
-        $db = new \Sodapop\Sodapop($model, $path);
-        $db->setSecure(true);
-        return $db;
-    }
-    */
-    
-    /*
-     * Create new unsecure database file.
-     *
-     * @param string Path of the new database file.
-     * @param string Password.
-     * @return mixed Successfully created database file.
-     */
-    /*
-    public static function create($path)
-    {
-        if (file_exists($path)) {
-            return false;
-        }
-        $content = self::EMPTY_OBJECT; // an empty object
-        file_put_contents($path, $content);
-        return true;
-    }
-    */
-    
-    /*
-     * Create new secure database file.
-     *
-     * @param string Path of the new database file.
-     * @param string Password.
-     * @return mixed Successfully created database file.
-     */
-    /*
-    public static function creates($path, $password)
-    {
-        if (file_exists($path)) {
-            return false;
-        }
-        $content = self::EMPTY_OBJECT; // an empty object
-        $encryptedContent = self::_encrypt($content, $password);
-        file_put_contents($path, $encryptedContent);
-        return true;
-    }
-    */    
-    
-    /*
+    /**
      * Save unsecure the database model to the file specified in load
      *
      * @return bool TRUE is returned if the model was successfully dumped. FALSE is returned if the model could not be dumped.
@@ -232,21 +120,7 @@ class Sodapop
         */
     }
     
-    /*
-    // Save secure database to file specified in load
-    public function dumps()
-    {
-        $path = $this->getPath();
-        $model = $this->getModel();
-        $password = $this->getPassword();
-        $json = json_encode($model, JSON_FORCE_OBJECT);
-        $encryptedContent = self::_encrypt($json, $password);
-        file_put_contents($path, $encryptedContent);
-        return true;
-    }
-    */
-    
-    /*
+    /**
      * Delete everything from the database.
      */
     public function drop()
@@ -258,43 +132,7 @@ class Sodapop
         return true;
     }
     
-    /*
-    private static function _encrypt($text, $pass)
-    {
-        //return openssl_encrypt($string, "aes128", $password);
-        $result = self::_xorph($text, md5($pass));
-        $result = base64_encode($result);
-        return $result;
-    }
-    */
-    
-    /*
-    private static function _decrypt($text, $pass)
-    {
-        //return openssl_decrypt($string, "aes128", $password);
-        $text = base64_decode($text);
-        $result = self::_xorph($text, md5($pass));
-        return $result;
-    }
-    */
-    
-    /*
-     * Xorph - XOR ciPHer.
-     */    
-    /*
-    private static function _xorph($text, $pass)
-    {
-        $result = "";
-        for ($i = 0; $i < strlen($text); ) {
-            for ($j = 0; $j < strlen($pass) && $i < strlen($text); $j++, $i++) {
-                $result .= $text{$i} ^ $pass{$j};
-            }
-        }
-        return $result;
-    }
-    */
-    
-    /*
+    /**
      * Set the value of a key.
      *
      * @param key ...
@@ -310,7 +148,7 @@ class Sodapop
         $this->dump();
     }
     
-    /*
+    /**
      * Append a value to a key.
      */
     public function append($key, $value)
@@ -321,14 +159,16 @@ class Sodapop
         $this->dump();
     }
     
-    // Get the value of a key
+    /**
+     * Get the value of a key.
+     */
     public function get($key)
     {
         $model = $this->getModel();
         return $model[$key];
     }
     
-    /*
+    /**
      * Get all the keys in the database.
      */
     public function keys()
@@ -341,21 +181,28 @@ class Sodapop
         return $keys;
     }
     
-    /*
+    /**
      * Delete a key.
      */
     public function rem($key)
     {
     }
     
-    // Increment the integer value of a key by one.
-    // @return bool True on success, False on failure
+    /**
+     * Increment the integer value of a key by one.
+     *
+     * @return bool Returns TRUE if integer value was successfully incremented. FALSE is returned otherwise.
+     */
     public function incr($key)
     {
         return $this->incrby($key, 1);
     }
     
-    // Increment the integer value of a key by the given amount.
+    /**
+     * Increment the integer value of a key by the given amount.
+     *
+     * @return bool Returns TRUE if integer value was successfully incremented. FALSE is returned otherwise.
+     */
     public function incrby($key, $increment)
     {
         $model = $this->getModel();
@@ -368,19 +215,23 @@ class Sodapop
         return false;
     }
     
-    // Decrement the integer value of a key by one.
+    /**
+     * Decrement the integer value of a key by one.
+     */
     public function decr($key)
     {
         return $this->incrby($key, -1);
     }
     
-    // Decrement the integer value of a key by the given amount.
+    /**
+     * Decrement the integer value of a key by the given amount.
+     */
     public function decrby($key, $decrement)
     {
         return $this->incrby($key, ($decrement*-1));
     }
     
-    /*
+    /**
      * Determine if key exists.
      *
      * @return bool TRUE if exists, otherwise false.
@@ -396,7 +247,9 @@ class Sodapop
         return false;
     }
     
-    // Add one or more key-value pairs to a dictionary.
+    /**
+     * Add one or more key-value pairs to a dictionary.
+     */
     public function dset($key, $pairs)
     {
         $model = $this->getModel();
@@ -408,28 +261,34 @@ class Sodapop
         return true;
     }
     
-    // Return the value for a field in a dictionary.
+    /**
+     * Return the value for a field in a dictionary.
+     */
     public function dget($key, $field)
     {
         $model = $this->getModel();
         return $model[$key][$field];
     }
     
-    // Get all the fields and values in a dictionary.
+    /**
+     * Get all the fields and values in a dictionary.
+     */
     public function dgetall($key)
     {
         $model = $this->getModel();
         return $model[$name];
     }
     
-    /*
+    /**
      * Delete a field and value in a dictionary.
      */
     public function drem()
     {
     }
     
-    // Get all the fields in a dictionary.
+    /**
+     * Get all the fields in a dictionary.
+     */
     public function dkeys($key)
     {
         $model = $this->getModel();
@@ -440,7 +299,9 @@ class Sodapop
         return $fields;
     }
     
-    // Get all the values in a dictionary.
+    /**
+     * Get all the values in a dictionary.
+     */
     public function dvals($key)
     {
         $model = $this->getModel();
@@ -451,7 +312,7 @@ class Sodapop
         return $values;
     }
     
-    /*
+    /**
      * Determine if field exists in a dictionary.
      */
     public function dexists($key, $queriedfield)
@@ -465,7 +326,7 @@ class Sodapop
         return false;
     }
     
-    /*
+    /**
      * Get the number of fields in a dictionary.
      */
     public function dlen($key)

@@ -17,7 +17,7 @@ class Sodapop
     const EMPTY_OBJECT = "{}";
      
     /**
-     * @var An model of the database file.
+     * @var An array model of the database file.
      */
     private $model;
     
@@ -27,7 +27,7 @@ class Sodapop
     private $path;
 
     /**
-     * ...
+     * Initialize database object.
      */
     public function __construct($model, $path)
     {
@@ -70,7 +70,7 @@ class Sodapop
     }
     
     /**
-     * Load unsecure database from a file. If database file doesn't exist, create one.
+     * Load the database from a file. If the database file doesn't exist, create one.
      *
      * @param string $path Path of the database file.
      *
@@ -88,36 +88,27 @@ class Sodapop
         }
         else {
             $db = new \Sodapop\Sodapop($model, $path);
-            //$db->setSecure(false);
             return $db;
         }
     }
     
     /**
-     * Save unsecure the database model to the file specified in load
+     * Save the database model to the file specified in load
      *
      * @return bool TRUE is returned if the model was successfully dumped. FALSE is returned if the model could not be dumped.
      */
     public function dump()
     {
-        /*
-        if ($this->secured()) {
+        $path = $this->getPath();
+        $model = $this->getModel();
+        $json = json_encode($model, JSON_FORCE_OBJECT);
+        if ($json === null) {
             return false;
         }
-        else { */
-            $path = $this->getPath();
-            $model = $this->getModel();
-            $json = json_encode($model, JSON_FORCE_OBJECT);
-            if ($json === null) {
-                return false;
-            }
-            else {
-                file_put_contents($path, $json);
-                return true;
-            }
-        /*
+        else {
+            file_put_contents($path, $json);
+            return true;
         }
-        */
     }
     
     /**
@@ -128,8 +119,13 @@ class Sodapop
         $path = $this->getPath();
         $model = self::EMPTY_OBJECT;
         $json = json_encode($model, JSON_FORCE_OBJECT);
-        file_put_contents($path, $json);
-        return true;
+        if ($json === null) {
+            return false;
+        }
+        else {
+            file_put_contents($path, $json);
+            return true;
+        }
     }
     
     /**
@@ -169,14 +165,23 @@ class Sodapop
     }
     
     /**
+     * Get all the keys and values in the database.
+     */
+    public function getall()
+    {
+        $model = $this->getModel();
+        return $model;
+    }
+    
+    /**
      * Get all the keys in the database.
      */
     public function keys()
     {
         $model = $this->getModel();
         $keys = array();
-        foreach ($model as $index=>$value) {
-            $keys[] = $index;
+        foreach ($model as $key=>$value) {
+            $keys[] = $key;
         }
         return $keys;
     }
@@ -228,7 +233,7 @@ class Sodapop
      */
     public function decrby($key, $decrement)
     {
-        return $this->incrby($key, ($decrement*-1));
+        return $this->incrby($key, ($decrement * -1));
     }
     
     /**
@@ -239,8 +244,8 @@ class Sodapop
     public function exists($key)
     {
         $model = $this->getModel();
-        foreach ($model as $index=>$value) {
-            if ($key == $index) {
+        foreach ($model as $currentKey=>$value) {
+            if ($currentKey === $key) {
                 return true;
             }
         }
@@ -248,7 +253,7 @@ class Sodapop
     }
     
     /**
-     * Add one or more key-value pairs to a dictionary.
+     * Add multiple valuess to multiple fields in a dictionary.
      */
     public function dset($key, $pairs)
     {
@@ -315,11 +320,11 @@ class Sodapop
     /**
      * Determine if field exists in a dictionary.
      */
-    public function dexists($key, $queriedfield)
+    public function dexists($key, $field)
     {
         $model = $this->getModel();
         foreach ($model[$key] as $currentField=>$value) {
-            if ($currentField === $queriedfield) {
+            if ($currentField === $field) {
                 return true;
             }
         }
